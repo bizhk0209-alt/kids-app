@@ -1,0 +1,298 @@
+/* ===== リセット & ベース ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --haruto: #6dab84;
+  --haruto-bg: #eaf5ee;
+  --haruto-light: #c4e0cf;
+  --yuki: #e07070;
+  --yuki-bg: #fdf0f0;
+  --yuki-light: #f5c0c0;
+  --nanami: #d4a820;
+  --nanami-bg: #fdf8e8;
+  --nanami-light: #f0dfa0;
+  --gray: #888;
+  --border: #e8e8e8;
+  --radius: 12px;
+  --shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+html { font-size: 16px; }
+body {
+  font-family: -apple-system, 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+  background: #f5f5f5;
+  color: #333;
+  min-height: 100vh;
+  padding-bottom: 24px;
+}
+
+/* ===== ヘッダー ===== */
+header {
+  background: #fff;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+header h1 { font-size: 1.1rem; font-weight: 700; }
+
+.process-btn {
+  background: #4a90d9;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: background 0.2s, transform 0.1s;
+}
+.process-btn:active { transform: scale(0.96); }
+.process-btn.loading { background: #999; pointer-events: none; }
+.btn-icon { font-size: 0.8rem; }
+
+/* ===== タブ ===== */
+.tabs {
+  display: flex;
+  background: #fff;
+  border-bottom: 2px solid var(--border);
+  position: sticky;
+  top: 53px;
+  z-index: 99;
+}
+.tab {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 12px 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--gray);
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  transition: color 0.2s, border-color 0.2s;
+}
+.tab[data-child="はると"].active { color: var(--haruto); border-color: var(--haruto); }
+.tab[data-child="ゆき"].active   { color: var(--yuki);   border-color: var(--yuki); }
+.tab[data-child="ななみ"].active { color: var(--nanami); border-color: var(--nanami); }
+
+/* ===== 検索バー ===== */
+.search-bar { padding: 10px 16px; background: #fff; border-bottom: 1px solid var(--border); }
+.search-bar input {
+  width: 100%;
+  padding: 9px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 24px;
+  font-size: 0.95rem;
+  background: #f9f9f9;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.search-bar input:focus { border-color: #4a90d9; background: #fff; }
+
+/* ===== イベントリスト ===== */
+main { padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; }
+
+.loading, .empty {
+  text-align: center;
+  color: var(--gray);
+  padding: 48px 16px;
+  font-size: 0.95rem;
+}
+
+/* ===== イベントカード ===== */
+.event-card {
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  border-left: 4px solid transparent;
+}
+.event-card.haruto { border-left-color: var(--haruto); }
+.event-card.yuki   { border-left-color: var(--yuki); }
+.event-card.nanami { border-left-color: var(--nanami); }
+
+.event-header {
+  padding: 14px 16px 10px;
+  cursor: pointer;
+  user-select: none;
+}
+.event-date {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  margin-bottom: 2px;
+}
+.event-card.haruto .event-date { color: var(--haruto); }
+.event-card.yuki .event-date   { color: var(--yuki); }
+.event-card.nanami .event-date { color: var(--nanami); }
+
+.event-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #222;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.expand-icon { font-size: 0.75rem; color: var(--gray); transition: transform 0.2s; }
+.event-card.expanded .expand-icon { transform: rotate(180deg); }
+
+.event-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+.meta-tag {
+  font-size: 0.8rem;
+  color: #555;
+  background: #f4f4f4;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+/* ===== チェックリスト ===== */
+.checklist-section {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+.event-card.expanded .checklist-section { max-height: 600px; }
+
+.checklist-inner {
+  border-top: 1px solid var(--border);
+  padding: 12px 16px 14px;
+}
+
+/* ゆきのふりがな切り替え */
+.kana-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.kana-toggle-row span { font-size: 0.8rem; color: var(--gray); }
+.kana-switch {
+  display: flex;
+  background: #f0f0f0;
+  border-radius: 16px;
+  padding: 2px;
+  gap: 2px;
+}
+.kana-switch button {
+  border: none;
+  background: transparent;
+  border-radius: 14px;
+  padding: 4px 10px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--gray);
+  transition: background 0.2s, color 0.2s;
+}
+.kana-switch button.active { background: var(--yuki); color: #fff; }
+
+.checklist { display: flex; flex-direction: column; gap: 8px; }
+
+.check-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 2px 0;
+}
+.check-item input[type="checkbox"] { display: none; }
+.check-box {
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, border-color 0.15s;
+  font-size: 0.75rem;
+}
+.check-item.checked .check-box {
+  background: var(--haruto);
+  border-color: var(--haruto);
+  color: #fff;
+}
+.event-card.yuki .check-item.checked .check-box   { background: var(--yuki);   border-color: var(--yuki); }
+.event-card.nanami .check-item.checked .check-box { background: var(--nanami); border-color: var(--nanami); }
+
+.check-label {
+  font-size: 0.95rem;
+  color: #333;
+  transition: color 0.15s, text-decoration 0.15s;
+}
+.check-item.checked .check-label { color: #bbb; text-decoration: line-through; }
+
+.check-kana {
+  font-size: 0.78rem;
+  color: var(--gray);
+  margin-left: 2px;
+}
+
+/* 全チェックボタン */
+.check-all-row {
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+}
+.btn-check-all {
+  border: 1.5px solid var(--border);
+  background: #fff;
+  border-radius: 16px;
+  padding: 5px 14px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  color: var(--gray);
+  transition: background 0.2s;
+}
+.btn-check-all:active { background: #f0f0f0; }
+
+/* 持ち物なし */
+.no-items { font-size: 0.85rem; color: #bbb; font-style: italic; }
+
+/* ===== 日付バッジ ===== */
+.days-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+  margin-left: 6px;
+}
+.days-badge.soon { background: #ffe0e0; color: #d44; }
+.days-badge.near { background: #fff3e0; color: #b85; }
+.days-badge.far  { background: #f0f0f0; color: #888; }
+.days-badge.past { background: #f0f0f0; color: #ccc; }
+
+/* ===== トースト ===== */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: rgba(40,40,40,0.92);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 24px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  z-index: 999;
+  transition: transform 0.3s ease;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }

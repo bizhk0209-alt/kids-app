@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="こどもカレンダー">
+  <title>こどもカレンダー</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>🏫 こどもカレンダー</h1>
+    <button id="btn-process" class="process-btn" onclick="triggerProcess()">
+      <span class="btn-icon">▶</span> 今すぐ処理
+    </button>
+  </header>
+
+  <!-- 子供タブ -->
+  <nav class="tabs">
+    <button class="tab active" data-child="はると" onclick="switchChild('はると', this)">
+      はると
+    </button>
+    <button class="tab" data-child="ゆき" onclick="switchChild('ゆき', this)">
+      ゆき
+    </button>
+    <button class="tab" data-child="ななみ" onclick="switchChild('ななみ', this)">
+      ななみ
+    </button>
+  </nav>
+
+  <!-- 検索バー -->
+  <div class="search-bar">
+    <input type="text" id="search-input" placeholder="🔍 けんさく（例：遠足・お弁当）" oninput="onSearch(this.value)">
+  </div>
+
+  <!-- イベントリスト -->
+  <main id="event-list">
+    <div class="loading">よみこみ中…</div>
+  </main>
+
+  <!-- トースト通知 -->
+  <div id="toast" class="toast"></div>
+
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    }
+  </script>
+</body>
+</html>
