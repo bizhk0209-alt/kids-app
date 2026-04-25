@@ -1,6 +1,6 @@
 // ===== 設定 =====
 const CONFIG = {
-  GAS_URL: '', // デプロイ後に設定
+  GAS_URL: 'https://script.google.com/macros/s/AKfycbypZzDW4KFBeAB1kooZDMe4tb23J7O7cbfNGTydgFiDORwqd83oS0ihVDn5LF9Sbphx6Q/exec',
 };
 
 const CHILDREN = {
