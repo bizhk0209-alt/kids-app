@@ -235,8 +235,12 @@ main { padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; }
   font-size: 0.95rem;
   color: #333;
   transition: color 0.15s, text-decoration 0.15s;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
-.check-item.checked .check-label { color: #bbb; text-decoration: line-through; }
+/* 単行（漢字のみ）の場合はそのまま色変え */
+.check-item.checked > .check-label { color: #bbb; text-decoration: line-through; }
 
 .check-kana {
   font-size: 0.78rem;
@@ -264,6 +268,40 @@ main { padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; }
 
 /* 持ち物なし */
 .no-items { font-size: 0.85rem; color: #bbb; font-style: italic; }
+
+/* 持ち物プレビュー（カード折り畳み時も表示） */
+.items-preview {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 6px;
+  margin-top: 7px;
+  font-size: 0.8rem;
+  color: #555;
+}
+.preview-item {
+  background: #f4f4f4;
+  border-radius: 10px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+.preview-item small {
+  font-size: 0.72rem;
+  color: var(--gray);
+  margin-left: 1px;
+}
+.preview-more { font-size: 0.75rem; color: var(--gray); }
+
+/* ゆきの漢字＋ひらがな2行表示 */
+.check-label { display: flex; flex-direction: column; gap: 0; }
+.check-kanji { font-size: 0.95rem; color: #333; }
+.check-kana-line {
+  font-size: 0.78rem;
+  color: var(--gray);
+  letter-spacing: 0.03em;
+}
+.check-item.checked .check-kanji,
+.check-item.checked .check-kana-line { color: #bbb; text-decoration: line-through; }
 
 /* ===== 日付バッジ ===== */
 .days-badge {

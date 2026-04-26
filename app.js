@@ -144,11 +144,22 @@ function renderCard(ev, child, today) {
   const itemsKana = itemsKanaRaw ? itemsKanaRaw.split('、').filter(Boolean) : [];
 
   const key = `${currentChild}|${dateStr}|${title}`;
-  const isExpanded = false; // 初期は閉じる
 
   // 日付フォーマット
   const dateLabel = formatDate(date);
   const daysLabel = getDaysLabel(date, today);
+
+  // 持ち物プレビュー（折り畳み状態でも見える）
+  let itemsPreviewHtml = '';
+  if (items.length > 0) {
+    const hasKana = child.needsKana && itemsKana.length > 0;
+    const previewList = items.slice(0, 4).map((item, i) => {
+      if (hasKana && itemsKana[i]) return `<span class="preview-item">${escHtml(item)}<small>（${escHtml(itemsKana[i])}）</small></span>`;
+      return `<span class="preview-item">${escHtml(item)}</span>`;
+    }).join('');
+    const more = items.length > 4 ? `<span class="preview-more">…他${items.length - 4}件</span>` : '';
+    itemsPreviewHtml = `<div class="items-preview">🎒 ${previewList}${more}</div>`;
+  }
 
   // 持ち物チェックリスト HTML
   const itemsHtml = renderChecklist(key, items, itemsKana, child);
@@ -165,6 +176,7 @@ function renderCard(ev, child, today) {
       <span class="expand-icon">▼</span>
     </div>
     ${place ? `<div class="event-meta"><span class="meta-tag">📍 ${escHtml(place)}</span></div>` : ''}
+    ${itemsPreviewHtml}
   </div>
   <div class="checklist-section">
     <div class="checklist-inner">
@@ -180,34 +192,33 @@ function renderChecklist(key, items, itemsKana, child) {
   }
 
   const hasKana = child.needsKana && itemsKana.length > 0;
-  const mode = kanaMode[key] || 'kanji';
 
-  const kanaToggleHtml = hasKana ? `
-<div class="kana-toggle-row">
-  <span>もちもの表示：</span>
-  <div class="kana-switch">
-    <button class="${mode === 'kanji' ? 'active' : ''}" onclick="setKanaMode('${escHtml(key)}', 'kanji', event)">漢字</button>
-    <button class="${mode === 'kana' ? 'active' : ''}" onclick="setKanaMode('${escHtml(key)}', 'kana', event)">ひらがな</button>
-  </div>
-</div>` : '';
-
+  // ゆきは漢字＋ひらがなを常時両方表示（トグルなし）
   const itemsHtml = items.map((item, i) => {
     const itemKey = `${key}|${i}`;
     const isChecked = !!checkedState[itemKey];
-    const displayItem = (hasKana && mode === 'kana' && itemsKana[i]) ? itemsKana[i] : item;
-    const subLabel = (hasKana && mode === 'kanji' && itemsKana[i]) ? `<span class="check-kana">（${escHtml(itemsKana[i])}）</span>` : '';
+
+    let labelHtml;
+    if (hasKana && itemsKana[i]) {
+      // 漢字とひらがなを両行で表示
+      labelHtml = `<span class="check-label">
+        <span class="check-kanji">${escHtml(item)}</span>
+        <span class="check-kana-line">${escHtml(itemsKana[i])}</span>
+      </span>`;
+    } else {
+      labelHtml = `<span class="check-label">${escHtml(item)}</span>`;
+    }
 
     return `
 <label class="check-item ${isChecked ? 'checked' : ''}" onclick="toggleItem('${escHtml(itemKey)}', this, event)">
   <div class="check-box">${isChecked ? '✓' : ''}</div>
-  <span class="check-label">${escHtml(displayItem)}${subLabel}</span>
+  ${labelHtml}
 </label>`;
   }).join('');
 
   const allChecked = items.every((_, i) => !!checkedState[`${key}|${i}`]);
 
   return `
-${kanaToggleHtml}
 <div class="checklist" id="cl-${escHtml(key)}">${itemsHtml}</div>
 <div class="check-all-row">
   <button class="btn-check-all" onclick="checkAll('${escHtml(key)}', ${items.length}, event)">
