@@ -81,8 +81,12 @@ async function triggerProcess() {
     const res = await fetch(CONFIG.GAS_URL, { method: 'POST' });
     const json = await res.json();
     if (json.success) {
-      showToast('✅ OCR処理完了！');
-      setTimeout(() => loadEvents(currentChild), 2000);
+      const msg = json.message || 'OCR処理完了';
+      showToast('✅ ' + msg);
+      // 新規ファイルがあった場合のみ再読み込み
+      if (json.newFiles !== 0) {
+        setTimeout(() => loadEvents(currentChild), 2000);
+      }
     } else {
       showToast('⚠️ ' + (json.error || 'エラー'));
     }
