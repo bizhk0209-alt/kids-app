@@ -144,6 +144,11 @@ function renderCard(ev, child, today) {
   const itemsKana = itemsKanaRaw ? itemsKanaRaw.split('、').filter(Boolean) : [];
 
   const key = `${currentChild}|${dateStr}|${title}`;
+  const desc = ev['説明'] || '';
+
+  // 下校時刻を説明欄から抽出
+  const dismissalMatch = desc.match(/🕐\s*下校[：:]\s*(\d{1,2}:\d{2})/);
+  const dismissalTime = dismissalMatch ? dismissalMatch[1] : null;
 
   // 日付フォーマット
   const dateLabel = formatDate(date);
@@ -175,7 +180,10 @@ function renderCard(ev, child, today) {
       <span>${escHtml(title)}</span>
       <span class="expand-icon">▼</span>
     </div>
-    ${place ? `<div class="event-meta"><span class="meta-tag">📍 ${escHtml(place)}</span></div>` : ''}
+    ${(place || dismissalTime) ? `<div class="event-meta">
+      ${place ? `<span class="meta-tag">📍 ${escHtml(place)}</span>` : ''}
+      ${dismissalTime ? `<span class="meta-tag dismissal">🕐 下校 ${escHtml(dismissalTime)}</span>` : ''}
+    </div>` : ''}
     ${itemsPreviewHtml}
   </div>
   <div class="checklist-section">

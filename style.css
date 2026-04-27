@@ -292,6 +292,13 @@ main { padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; }
 }
 .preview-more { font-size: 0.75rem; color: var(--gray); }
 
+/* 下校時刻バッジ */
+.meta-tag.dismissal {
+  background: #e8f4ff;
+  color: #2a6db5;
+  font-weight: 700;
+}
+
 /* ゆきの漢字＋ひらがな2行表示 */
 .check-label { display: flex; flex-direction: column; gap: 0; }
 .check-kanji { font-size: 0.95rem; color: #333; }
